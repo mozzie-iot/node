@@ -1,7 +1,7 @@
 import os
 import ujson
 
-__FILE_PATH = 'node/config.json'
+__FILE_PATH = 'config.json'
 
 def read():
     f = open(__FILE_PATH,'r')

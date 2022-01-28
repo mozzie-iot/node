@@ -4,9 +4,9 @@ from micropython import const
 from uasyncio import Event
 import struct
 
-import node.constants as constants
-from node.utils.logger import Log
-import node.utils.ble_codes as ble_codes
+import node.core.constants as constants
+from node.core.utils.logger import Log
+import node.core.utils.ble_codes as ble_codes
 
 _IRQ_CENTRAL_CONNECT = const(1)
 _IRQ_CENTRAL_DISCONNECT = const(2)

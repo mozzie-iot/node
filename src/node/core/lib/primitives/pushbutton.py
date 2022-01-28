@@ -6,7 +6,7 @@
 import uasyncio as asyncio
 import utime as time
 from . import launch
-from primitives.delay_ms import Delay_ms
+from node.core.lib.primitives.delay_ms import Delay_ms
 
 
 # An alternative Pushbutton solution with lower RAM use is available here
