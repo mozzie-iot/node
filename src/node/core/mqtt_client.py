@@ -1,8 +1,8 @@
 import uasyncio as asyncio
 
-from node.lib.mqtt_as import MQTT_AS_Client, eliza
-from node.utils.logger import Log
-import node.constants as constants
+from node.core.lib.mqtt_as import MQTT_AS_Client, eliza
+from node.core.utils.logger import Log
+import node.core.constants as constants
 
 from client import NodeClient
 

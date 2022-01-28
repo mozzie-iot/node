@@ -1,7 +1,7 @@
-from node.utils.uuid import uuid4
-from node.utils.fs import read, write
-import node.interface.led as led
-from node.utils.logger import Log
+from node.core.utils.uuid import uuid4
+from node.core.utils.fs import read, write
+import node.core.interface.led as led
+from node.core.utils.logger import Log
 
 from client import NodeClient
 

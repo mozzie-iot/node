@@ -1,8 +1,8 @@
 import uasyncio as asyncio
 
-from node.interface.device import Device
-from node.mqtt_client import MQTTClient
-from node.lib.bluetooth import Ble
+from node.core.interface.device import Device
+from node.core.mqtt_client import MQTTClient
+from node.core.lib.bluetooth import Ble
 
 def set_global_exception():
     def handle_exception(loop, context):
