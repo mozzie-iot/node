@@ -7,9 +7,10 @@ import node.core.constants as constants
 from client import NodeClient
 
 class MQTTClient(NodeClient):
-    def __init__(self, system):
+    def __init__(self, system, led):
         super().__init__()
         self.system = system
+        self.led = led
         self.__client = None
 
     async def __on_publish(self, topic, msg):
@@ -39,6 +40,11 @@ class MQTTClient(NodeClient):
         
         self.incoming(decodedTopic, payload, retained)
 
+    async def __wifi_coro(self, network_state):
+        if not network_state:
+            self.led.pulse("red")
+
+
     async def routine(self):
         config = self.system.config
         MQTT_AS_Client.DEBUG = True
@@ -61,11 +67,11 @@ class MQTTClient(NodeClient):
             'clean':         True,
             'max_repubs':    4,
             'will':          ['status/offline/{}'.format(config["secret_key"]),'', False],
-            'wifi_coro':     eliza
+            'wifi_coro':     self.__wifi_coro
         })
 
         try:
-            self.system.event(constants.SYSTEM_SETUP)
+            self.led.green()
             await self.__client.connect()
 
             if hasattr(super(), 'set_publish'):
@@ -85,7 +91,7 @@ class MQTTClient(NodeClient):
             # Non terminating
             await asyncio.create_task(self.node_routine())
         except Exception as e:
-            self.system.event(constants.SYSTEM_ERROR)
+            self.led.pulse("red")
             Log.error("MQTT.routine", "Failed to connect", e)
             # broker not available
             await asyncio.create_task(self.system.restart(5))

@@ -104,6 +104,5 @@ class Ble:
         self.__ble.gap_advertise(interval, adv_data=payload, connectable=True)
         
     async def routine(self):
-        self.__system.event(constants.SYSTEM_NOT_SETUP)
         self.__advertise(100)
         await self.__is_connected.wait()

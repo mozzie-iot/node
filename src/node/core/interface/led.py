@@ -1,35 +1,58 @@
 import machine 
 import uasyncio as asyncio
 
+from node.core.utils.logger import Log
+
 DUTY_OFF = 1023
 DUTY_ON = 0
 
 green = machine.PWM(machine.Pin(12, machine.Pin.OUT), freq=5000, duty=DUTY_OFF)
-blue = machine.PWM(machine.Pin(13, machine.Pin.OUT), freq=5000, duty=DUTY_OFF)
-red = machine.PWM(machine.Pin(14, machine.Pin.OUT), freq=5000, duty=DUTY_OFF)
-   
-def boot():
-    blue.duty(DUTY_ON)
-    green.duty(DUTY_OFF)
-    red.duty(DUTY_OFF)
+red = machine.PWM(machine.Pin(13, machine.Pin.OUT), freq=5000, duty=DUTY_OFF)
+blue = machine.PWM(machine.Pin(14, machine.Pin.OUT), freq=5000, duty=DUTY_OFF)
 
-async def not_setup():
-    green.duty(DUTY_OFF)
-    red.duty(DUTY_OFF)
-    while True:
-        for i in range(1024):
-            blue.duty(i)
-            await asyncio.sleep_ms(2)
-        for i in range(1023, -1, -1):
-            blue.duty(i)
-            await asyncio.sleep_ms(2)
+class LED:
+    def __init__(self):
+        self.pulse_task = None
 
-def setup():
-    green.duty(DUTY_ON)
-    blue.duty(DUTY_OFF)
-    red.duty(DUTY_OFF)
+    def reset(self):
+        if self.pulse_task is not None:
+            self.pulse_task.cancel()
+        
+        blue.duty(DUTY_OFF)
+        green.duty(DUTY_OFF)
+        red.duty(DUTY_OFF)
 
-def error():
-    red.duty(DUTY_ON)
-    green.duty(DUTY_OFF)
-    blue.duty(DUTY_OFF)
+    async def pulse_handler(self, color, interval_ms):
+        if color == "green":
+            target = green
+        elif color == "blue":
+            target = blue
+        elif color == "red":
+            target == red
+        else: 
+            raise Exception("LED pulse color must be either 'green', 'blue' or 'red'")
+
+        while True:
+            for i in range(1024):
+                target.duty(i)
+                await asyncio.sleep_ms(interval_ms)
+            for i in range(1023, -1, -1):
+                target.duty(i)
+                await asyncio.sleep_ms(interval_ms)
+
+    def pulse(self, color, interval_ms=1):
+        Log.info("LED.pulse", "color: {}, interval_ms: {}".format(color, interval_ms))
+        self.reset()
+        self.pulse_task = asyncio.create_task(self.pulse_handler(color, interval_ms))
+
+    def green(self):
+        self.reset()
+        green.duty(DUTY_ON)
+
+    def red(self):
+        self.reset()
+        red.duty(DUTY_ON)
+
+    def blue(self):
+        self.reset()
+        blue.duty(DUTY_ON)

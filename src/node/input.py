@@ -1,7 +1,7 @@
 import ujson
 import uasyncio as asyncio
 
-from node.utils.logger import Log
+from node.core.utils.logger import Log
 
 class InputClient(object):
     def __init__(self):

@@ -1,15 +1,15 @@
 from node.core.utils.uuid import uuid4
 from node.core.utils.fs import read, write
-import node.core.interface.led as led
+from node.core.interface.led import LED
 from node.core.utils.logger import Log
 
 from client import NodeClient
 
-led.boot()
+led = LED()
+led.blue()
 Log.info("system", "booting up!")
 
 def get_config():
-
     def get_node_type(node):
         for base in node.__class__.__bases__:
             if base.__name__ == "InputClient":
@@ -49,7 +49,7 @@ def get_config():
 
             return config
         except Exception as e:
-            led.error()
+            led.red()
             Log.error("Boot", "config failed", e)
             return None
 

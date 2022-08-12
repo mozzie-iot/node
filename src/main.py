@@ -16,16 +16,18 @@ async def main():
     set_global_exception()  # Debug aid        
 
     #  config var passed from boot.py
-    system = Device(config)
+    system = Device(config, led)
 
     # Listen for reset btn
     asyncio.create_task(system.routine())
 
     if not system.is_setup:
+        Log.info("main", "Not setup!")
+        led.pulse("blue")
         # if not setup, Ble advertising with non terminating event
         await asyncio.create_task(Ble(system).routine())
 
-    await asyncio.create_task(MQTTClient(system).routine())
+    await asyncio.create_task(MQTTClient(system, led).routine())
 try:
     if config:
         asyncio.run(main())

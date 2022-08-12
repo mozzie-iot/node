@@ -3,18 +3,18 @@ import uasyncio as asyncio
 from uasyncio import Event
 
 from node.core.lib.primitives.pushbutton import Pushbutton
-from node.core.interface.events import Events
 import node.core.utils.fs as fs
 from node.core.utils.logger import Log
 import node.core.constants as constants
 
-class Device(Events):
+class Device():
     _btn_pin = machine.Pin(5, machine.Pin.IN, machine.Pin.PULL_UP)
     _btn_restart_duration = 5000
 
-    def __init__(self, config):
+    def __init__(self, config, led):
         super().__init__()
         self.config = config
+        self.led = led
         # Event to wait for reset button
         self.__can_restart = Event()
 
@@ -49,8 +49,7 @@ class Device(Events):
         # No need to reset up if not setup
         # if not self.is_setup:
         #     return
-
-        self.event(constants.SYSTEM_RESET)
+        self.led.blue()
         fs.remove()
         self.__can_restart.set()
         asyncio.create_task(self.restart(5))

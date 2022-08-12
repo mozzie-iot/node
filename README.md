@@ -1,1 +1,1 @@
-## Harriot Node Micropython ESP32 Port
+## Harness IoT Node Micropython ESP32 Port
