@@ -3,6 +3,7 @@ import uasyncio as asyncio
 from node.core.interface.device import Device
 from node.core.mqtt_client import MQTTClient
 from node.core.lib.bluetooth import Ble
+from node.core.utils.logger import Log
 
 def set_global_exception():
     def handle_exception(loop, context):
@@ -23,13 +24,22 @@ async def main():
 
     if not system.is_setup:
         Log.info("main", "Not setup!")
-        led.pulse("blue")
+        led.pulse("blue", 1)
         # if not setup, Ble advertising with non terminating event
         await asyncio.create_task(Ble(system).routine())
 
     await asyncio.create_task(MQTTClient(system, led).routine())
+
+    print("HUHUHU"*80)
+
 try:
     if config:
         asyncio.run(main())
+except Exception as e:
+    Log.error("main", "System error", e)
+    led.red(False)
+except KeyboardInterrupt:
+    Log.error("main", "Keyboard interrupt")
+    led.red(False)
 finally:
     asyncio.new_event_loop()

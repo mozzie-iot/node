@@ -14,8 +14,8 @@ class LED:
     def __init__(self):
         self.pulse_task = None
 
-    def reset(self):
-        if self.pulse_task is not None:
+    def reset(self, cancel_task=True):
+        if cancel_task and self.pulse_task is not None:
             self.pulse_task.cancel()
         
         blue.duty(DUTY_OFF)
@@ -28,15 +28,15 @@ class LED:
         elif color == "blue":
             target = blue
         elif color == "red":
-            target == red
+            target = red
         else: 
             raise Exception("LED pulse color must be either 'green', 'blue' or 'red'")
 
         while True:
-            for i in range(1024):
+            for i in range(0, 1024, 10):
                 target.duty(i)
                 await asyncio.sleep_ms(interval_ms)
-            for i in range(1023, -1, -1):
+            for i in range(1023, -1, -10):
                 target.duty(i)
                 await asyncio.sleep_ms(interval_ms)
 
@@ -49,8 +49,11 @@ class LED:
         self.reset()
         green.duty(DUTY_ON)
 
-    def red(self):
-        self.reset()
+    # Need cancel_task arg to use on system error or keyboard interrupt
+    # because when asyncio loop is complete it automatically cleans up tasks    
+    # so this would throw exception as it would be canceling tasks that dont exist
+    def red(self, cancel_task=True):
+        self.reset(cancel_task)
         red.duty(DUTY_ON)
 
     def blue(self):
