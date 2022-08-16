@@ -49,12 +49,16 @@ class MQTTClient(NodeClient):
         config = self.system.config
         MQTT_AS_Client.DEBUG = True
         self.__client  = MQTT_AS_Client({
-            'client_id':     "{0}:{1}".format(config["type"], config["secret_key"]),
-            'server':        config["ap"]["ip"],
+            # 'client_id':     "{0}:{1}".format(config["type"], config["secret_key"]),
+            'client_id':     "Output:123",
+            # 'server':        config["ap"]["ip"],
+            'server':        '10.0.0.201',
             'subs_cb':       self.__subscribe,
             'connect_coro':  self.__conn_han,
-            'ssid':          config["ap"]["ssid"],
-            'wifi_pw':       config["ap"]["pw"],
+            # 'ssid':          config["ap"]["ssid"],
+            'ssid':          'Mollytyler1214',
+            # 'wifi_pw':       config["ap"]["pw"],
+            'wifi_pw':       'Chauncey1214',
             'port':          1883,
             'user':          '',
             'password':      '',
@@ -66,13 +70,15 @@ class MQTTClient(NodeClient):
             'clean_init':    True,
             'clean':         True,
             'max_repubs':    4,
-            'will':          ['status/offline/{}'.format(config["secret_key"]),'', False],
+            # 'will':          ['status/offline/{}'.format(config["secret_key"]),'', False],
+            'will':          ['status/offline/test','', False],
             'wifi_coro':     self.__wifi_coro
         })
 
         try:
             self.led.green()
             await self.__client.connect()
+            Log.info("MQTT.routine", "Successful network connection")
 
             if hasattr(super(), 'set_publish'):
                 self.set_publish(self.__on_publish)
