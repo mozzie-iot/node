@@ -57,7 +57,7 @@ class Ble:
             Log.info("Ble.__handle_actions", "ACTION: {0}, PAYLOAD: {1}".format(action, payload))
 
             if action == "auth":
-                data = ujson.dumps({"public_key": self.__system.config["public_key"]}) 
+                data = ujson.dumps({"api_key": self.__system.config["api_key"]}) 
                 self.__write(data)
             elif action == "setup":
                 self.__system.set_config(payload)

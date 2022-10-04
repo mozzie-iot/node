@@ -49,8 +49,7 @@ class MQTTClient(NodeClient):
         config = self.system.config
         MQTT_AS_Client.DEBUG = True
         self.__client  = MQTT_AS_Client({
-            # 'client_id':     "{0}:{1}".format(config["type"], config["secret_key"]),
-            'client_id':     "Output:123",
+            'client_id':     "{0}:{1}".format(config["type"], config["secret_key"]),
             # 'server':        config["ap"]["ip"],
             'server':        '',
             'subs_cb':       self.__subscribe,
@@ -70,12 +69,12 @@ class MQTTClient(NodeClient):
             'clean_init':    True,
             'clean':         True,
             'max_repubs':    4,
-            # 'will':          ['status/offline/{}'.format(config["secret_key"]),'', False],
-            'will':          ['status/offline/test','', False],
+            'will':          ['status/offline/{}'.format(config["secret_key"]),'', False],
             'wifi_coro':     self.__wifi_coro
         })
 
         try:
+            Log.info("MQTT.routine", "Init")
             self.led.green()
             await self.__client.connect()
             Log.info("MQTT.routine", "Successful network connection")

@@ -26,22 +26,22 @@ def get_config():
         node = NodeClient()
         # initial boot or reset
         type = get_node_type(node)
-        public_key = getattr(node, 'public_key')
+        api_key = getattr(node, 'api_key')
         
         try:
             # Setup config validation
             if type is None:
                 raise Exception("Failed to determine node type - node client must inherit either InputMQTT or OutputMQTT")
             
-            if public_key is None:
-                raise Exception("Node client 'public_key' not set")
+            if api_key is None:
+                raise Exception("Node client 'api_key' not set")
 
             # Save as string
             secret_key = str(uuid4())
 
             config = {
                 "type": type, 
-                "public_key": public_key, 
+                "api_key": api_key, 
                 "secret_key": secret_key, 
                 "ap": None
             }
@@ -54,3 +54,5 @@ def get_config():
             return None
 
 config = get_config()
+
+print("Config deets: ", config)

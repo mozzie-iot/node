@@ -22,12 +22,13 @@ async def main():
     # Listen for reset btn
     asyncio.create_task(system.routine())
 
-    # if not system.is_setup:
-    #     Log.info("main", "Not setup!")
-    #     led.pulse("blue", 1)
-    #     # if not setup, Ble advertising with non terminating event
-    #     await asyncio.create_task(Ble(system).routine())
+    if not system.is_setup:
+        Log.info("main", "Not setup!")
+        led.pulse("blue", 1)
+        # if not setup, Ble advertising with non terminating event
+        await asyncio.create_task(Ble(system).routine())
 
+    Log.info("main", "Device setup!")
     await asyncio.create_task(MQTTClient(system, led).routine())
 
 try:
