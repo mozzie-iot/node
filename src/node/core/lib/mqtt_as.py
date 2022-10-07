@@ -512,7 +512,15 @@ class MQTT_AS_Client(MQTT_base):
             await self.wifi_connect()  # On 1st call, caller handles error
             # Note this blocks if DNS lookup occurs. Do it once to prevent
             # blocking during later internet outage:
-            self._addr = socket.getaddrinfo(self.server, self.port)[0][-1]
+
+            # HACK - getaddrinfo seems to have a fast timeout which doesnt allow dns to resolve
+            for i in range(5):
+                try:
+                    self._addr = socket.getaddrinfo(self.server, self.port)[0][-1]
+                    break
+                except:
+                    pass
+               
         self._in_connect = True  # Disable low level ._isconnected check
         clean = self._clean if self._has_connected else self._clean_init
         try:

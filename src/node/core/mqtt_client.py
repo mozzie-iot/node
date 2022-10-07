@@ -50,14 +50,11 @@ class MQTTClient(NodeClient):
         MQTT_AS_Client.DEBUG = True
         self.__client  = MQTT_AS_Client({
             'client_id':     "{0}:{1}".format(config["type"], config["secret_key"]),
-            # 'server':        config["ap"]["ip"],
-            'server':        '',
+            'server':        'hub.huebot',
             'subs_cb':       self.__subscribe,
             'connect_coro':  self.__conn_han,
-            # 'ssid':          config["ap"]["ssid"],
-            'ssid':          '',
-            # 'wifi_pw':       config["ap"]["pw"],
-            'wifi_pw':       '',
+            'ssid':          config["ap"]["ssid"],
+            'wifi_pw':       config["ap"]["pw"],
             'port':          1883,
             'user':          '',
             'password':      '',
