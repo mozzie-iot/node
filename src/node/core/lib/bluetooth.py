@@ -1,4 +1,5 @@
 import ujson
+from node.core.interface.device import Device
 import ubluetooth as bt
 from micropython import const
 from uasyncio import Event
@@ -21,7 +22,7 @@ _SERVICE = (_SERVICE_UUID, (_CHAR_RX,),)
 SERVICES = (_SERVICE,)
 
 class Ble:
-    def __init__(self, system):
+    def __init__(self, system: Device):
         self.__system = system
         self.__ble = bt.BLE()
         self.__ble.active(True)
@@ -60,7 +61,7 @@ class Ble:
                 data = ujson.dumps({"api_key": self.__system.config["api_key"]}) 
                 self.__write(data)
             elif action == "setup":
-                self.__system.set_config(payload)
+                self.__system.setup(payload['ap'], payload['mqtt'])
                 data = ujson.dumps({"secret_key": self.__system.config["secret_key"]}) 
                 self.__write(data)
             elif action == "complete":
@@ -72,7 +73,7 @@ class Ble:
                     
                 elif payload == "error":
                     # Clear ap credentials, start advertising
-                    self.__system.set_config(None)
+                    self.__system.reset_config()
                     self.__advertise(100)
                 else:
                     raise Exception("Invalid 'complete' action payload: {}".format(payload))

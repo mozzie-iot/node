@@ -43,7 +43,8 @@ def get_config():
                 "type": type, 
                 "api_key": api_key, 
                 "secret_key": secret_key, 
-                "ap": None
+                "ap": None,
+                "mqtt": None
             }
             write(config)
 

@@ -263,6 +263,7 @@ class MQTT_base:
 
     async def _ping(self):
         async with self.lock:
+            print(b"\xc0\0")
             await self._as_write(b"\xc0\0")
 
     # Check internet connectivity by sending DNS lookup to Google's 8.8.8.8

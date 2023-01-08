@@ -18,11 +18,16 @@ class Device():
         # Event to wait for reset button
         self.__can_restart = Event()
 
-    def set_config(self, config):
-        # self.config["model"] = config["model"]
-        self.config["ap"] = config
+    def setup(self, ap, mqtt):
+        self.config['ap'] = ap
+        self.config['mqtt'] = mqtt
         fs.write(self.config)
-    
+
+    def reset_config(self):
+        self.config['ap'] = None
+        self.config['mqtt'] = None
+        fs.write(self.config)
+
     @property
     def is_setup(self):
         # Is setup if hub access point details are set

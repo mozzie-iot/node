@@ -16,4 +16,5 @@ def write(data):
     
 
 def remove():
+    print(f"Deleting {__FILE_PATH}")
     os.remove(__FILE_PATH)
