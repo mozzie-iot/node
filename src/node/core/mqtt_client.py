@@ -33,12 +33,13 @@ class MQTTClient(NodeClient):
     async def __conn_han(self, client):
         self.led.green()
 
-        config = self.system.config
+        secret = self.system.config["secret_key"]
+
+        # Set custom node settings
+        await client.subscribe(f"node/{secret}/settings", 1)
         
-        # General node communication
-        sub_topic = "node/{}".format(config["secret_key"])
-        await client.subscribe(sub_topic, 1)
-        Log.info("MQTT.__conn_han", "Subscription topic: {}".format(sub_topic))
+        # Update node state
+        await client.subscribe(f"node/{secret}/state", 1)
 
         # If broker or transporter go down, they will publish 'alive_check' when 
         # back up - mostly relevant for hot reloading in development
@@ -53,6 +54,8 @@ class MQTTClient(NodeClient):
     def __subscribe(self, topic, payload, retained):
         Log.info("MQTT.subscribe", "topic:{0}, payload:{1}, retained:{2}".format(topic, payload, retained))
         decodedTopic = topic.decode("utf-8")
+        decodedPayload = payload.decode("utf-8");
+        payloadDict = ujson.loads(decodedPayload)
 
         if decodedTopic == "alive_check":
             asyncio.create_task(self.__node_online())
@@ -60,15 +63,13 @@ class MQTTClient(NodeClient):
 
         if decodedTopic == "status/online/reply":
             # Set node state
-            payloadStr = payload.decode("utf-8");
-            payloadObj = ujson.loads(payloadStr)
-            channels = payloadObj["response"]
+            channels = payloadDict["response"]
             for key, value in channels.items():
                 asyncio.create_task(self.on_state_update(key, value))                   
 
             return
         
-        self.incoming(decodedTopic, payload, retained)
+        self.incoming(decodedTopic, payloadDict, retained)
 
     async def __wifi_coro(self, network_state):
         if not network_state:
@@ -119,9 +120,7 @@ class MQTTClient(NodeClient):
             # Output only methods
             if hasattr(super(), 'set_on_state_update_fn'):
                 self.set_on_state_update_fn(self.on_state_update)  
-            
-            # Non terminating
-            await asyncio.create_task(self.node_routine())
+
         except Exception as e:
             self.led.pulse("red")
             Log.error("MQTT.routine", "Failed to connect", e)

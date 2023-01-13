@@ -31,9 +31,11 @@ async def main():
     Log.info("main", "Device setup!")
     await asyncio.create_task(MQTTClient(system, led).routine())
 
+loop = asyncio.get_event_loop()
 try:
     if config:
         asyncio.run(main())
+        loop.run_forever()
 except Exception as e:
     Log.error("main", "System error", e)
     led.red(False)
@@ -41,4 +43,4 @@ except KeyboardInterrupt:
     Log.error("main", "Keyboard interrupt")
     led.red(False)
 finally:
-    asyncio.new_event_loop()
+    loop.close()
