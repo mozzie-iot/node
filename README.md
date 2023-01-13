@@ -8,24 +8,32 @@
 ## client.py
 
 Ideally this is the only file that should be edited when developing a custom node - all other code is considered to be 'core'.
+<b>Requires either `OutputClient` or `InputClient` as parent class</b>
 
-### Requirements
+### Properties
 
-- `NodeClient` class with either `OutputClient` or `InputClient` as the parent class. See below for API detail.
-- `api_key` is a required property of `NodeClient`. This is the node model api key.
+<b>'api_key'</b> [`uuid`] generated when creating model (required)
 
-## API
+### Methods
 
-### OutputClient
+#### on_disconnect (optional)
 
-#### async def on_state_update(self, channel, state):
+Called when node loses connection with the broker.
 
-- required method
-- params:
-  - channel: node channel getting updated
-  - state: ["on" | "off", duty_cycle (int)]
+### Output Only Methods
 
-## Example (client.py)
+#### on_state_update (required)
+
+Asynchronous.
+
+Called when when either topic 'node/[instance_key]' (payload has 'action' key) is published by another client or when node connects to broker
+
+Args:
+
+1. `channel` node channel getting updated
+2. `state` "on" | "off", duty_cycle (int)]
+
+### Example
 
 4 Channel relay with a normally open config
 
