@@ -54,3 +54,7 @@ class NodeClient(OutputClient):
 
 
 ```
+
+## Core Schematic
+
+![base_fritz](https://user-images.githubusercontent.com/8736328/212395999-e01645ff-3b16-40e3-815f-353ec8023aa0.jpg)
