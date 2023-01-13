@@ -1,8 +1,11 @@
 import ujson
 import uasyncio as asyncio
 
-class OutputClient(object):   
+from node.core.node import Node
+
+class OutputClient(Node):   
     def __init__(self):
+        super().__init__()
         self.__on_state_update = None
         self.__on_settings = None
 
@@ -40,7 +43,7 @@ class OutputClient(object):
         if "action" in data:
             type = data["action"]["type"]
             channel = data["action"]["channel"]
-            asyncio.create_task(self.__on_state_update(type, channel)) 
+            asyncio.create_task(self.__on_state_update(channel, type)) 
             self._subscribe_response(topic, payloadObj["id"], "success")
     
     # for use in base
