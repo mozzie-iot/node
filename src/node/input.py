@@ -59,10 +59,6 @@ class InputClient(object):
                 Log.info("InputClient.incoming","status: INACTIVE")
             return
 
-    # for use in base
-    async def node_routine(self):
-        while True:
-            await asyncio.sleep_ms(300)
             
             
 
