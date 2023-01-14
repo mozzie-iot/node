@@ -5,6 +5,10 @@ class Node(object):
     def on_disconnect(self):
         pass
 
+    # For future use
+    def on_settings(self, settings):
+        pass
+
     def set_publish(self, fn):
         self.__publish = fn
 
