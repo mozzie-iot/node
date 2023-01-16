@@ -43,12 +43,36 @@ Called when node loses connection with the broker.
 
 Asynchronous.
 
-Called when when either topic 'node/[instance_key]' (payload has 'action' key) is published by another client or when node connects to broker
+Called when 'node/[instance_key]' topic is published (or node connects to broker)
 
 Args:
 
 1. `channel` node channel getting updated
 2. `state` "on" | "off", duty_cycle (int)]
+
+### Input Only Methods
+
+#### on_state_activate (required)
+
+Asynchronous.
+
+Called when 'node/[instance_key]' topic is published (or node connects to broker) with payload "on" (state)
+
+#### on_state_deactivate (optional)
+
+Synchronous. No args.
+
+Called when 'node/[instance_key]' topic is published (or node connects to broker) with payload "off" (state)
+
+### send_value (optional)
+
+Synchronous.
+
+Publish input values to topic 'input:[instance_key]'
+
+Args:
+
+1. 'message': str (Recommended to use ujson.dumps to send list of values in order of channels so subscriber knows what it's receiving - see input example below)
 
 ## Examples
 
@@ -87,10 +111,11 @@ class NodeClient(OutputClient):
 DS18B20 digital temperature sensor
 
 ```
-import uasyncio as asyncio
 import ds18x20
 import machine
 import onewire
+import uasyncio as asyncio
+import ujson
 
 from node.input import InputClient
 from node.core.utils.logger import Log
@@ -113,9 +138,9 @@ class NodeClient(InputClient):
                 if isinstance(temp, float):
                     measurement = round(temp, 2)
                     Log.info("NodeClient.on_state_activate", f"publish: {measurement}")
-                    self.send_value(0, str(measurement))
+                    self.send_value(ujson.dumps([str(measurement)]))
                 else:
-                    self.send_value(0, "0.0")
+                    self.send_value(ujson.dumps(["0.0"]))
 
             # Send measurment every 15 seconds
             await asyncio.sleep(15)
