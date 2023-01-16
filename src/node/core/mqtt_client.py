@@ -68,11 +68,8 @@ class MQTTClient(NodeClient):
                 # different API key
                 if payloadDict["response"] == "not_found":
                     self.system.reset_config()
-                    self.system.restart(5)
+                    asyncio.create_task(self.system.restart(1))
                     return
-
-                # for key, value in response.items():
-                #     asyncio.create_task(self.on_state_update(key, value))
 
                 # Set node state on connection (handled differently for inputs vs. outputs)
                 self.on_bootstrap(decodedTopic, payloadDict, retained)                   

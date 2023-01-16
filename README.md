@@ -149,3 +149,7 @@ class NodeClient(InputClient):
 ## Core Schematic
 
 ![base_fritz](https://user-images.githubusercontent.com/8736328/212395999-e01645ff-3b16-40e3-815f-353ec8023aa0.jpg)
+
+## Gotchas
+
+- Intermittent issues connecting to the device (often occurs when swapping out different ESP32s). Steps that have seemed to fix - 1. Unplug the device. 2. Reload VSC window 3. 3. Plug device back in and try to connect
