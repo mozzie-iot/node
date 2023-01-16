@@ -1,11 +1,28 @@
 # Huebot Node Micropython ESP32 Port
 
-## Setup
+## Development
 
-- Pymakr extension for VS code is recommended
-- Drop in `client.py` on `src` directory
+### Flashing ESP32 with MicroPython
 
-## client.py
+This setup has only been tested on Mac
+
+#### Requirements
+
+- ESPTool (I think I installed with Homebrew)
+- Download the latest [ESP32 MicroPython firmware](https://micropython.org/download/esp32/) (.bin file)
+
+#### Steps
+
+1. Connect ESP32 to computer with USB to Micro USB data cable (Make sure the cable has data transfer ability and not just a charging cable - this is known to trip folks up)
+2. Identiy the serial connection port: `ls /dev/tty.usbserial*`
+3. Reset the device to ensure we are working with a clean slate: `esptool.py --port [serial port] erase_flash`
+4. Install firmware on device: `esptool.py --chip ESP32 --port [serial port] write_flash -z 0x1000 [path to MicroPython firmware]`
+
+### PyMakr Setup
+
+To do...
+
+### client.py
 
 Ideally this is the only file that should be edited when developing a custom node - all other code is considered to be 'core'.
 <b>Requires either `OutputClient` or `InputClient` as parent class</b>
