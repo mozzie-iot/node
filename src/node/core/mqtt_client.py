@@ -1,3 +1,4 @@
+import sys
 import uasyncio as asyncio
 import ujson
 
@@ -15,7 +16,6 @@ class MQTTClient(NodeClient):
 
     async def __on_publish(self, topic, msg):
         await self.__client.publish(topic, msg, qos = 0)
-
 
     async def __node_online(self):
         Log.info("MQTT.__node_online", "Publish Node Online")
@@ -52,30 +52,42 @@ class MQTTClient(NodeClient):
         await self.__node_online()
 
     def __subscribe(self, topic, payload, retained):
-        Log.info("MQTT.subscribe", "topic:{0}, payload:{1}, retained:{2}".format(topic, payload, retained))
-        decodedTopic = topic.decode("utf-8")
-        decodedPayload = payload.decode("utf-8");
-        payloadDict = ujson.loads(decodedPayload)
 
-        if decodedTopic == "alive_check":
-            asyncio.create_task(self.__node_online())
-            return
+        try:
+            Log.info("MQTT.subscribe", "topic:{0}, payload:{1}, retained:{2}".format(topic, payload, retained))
+            decodedTopic = topic.decode("utf-8")
+            decodedPayload = payload.decode("utf-8");
+            payloadDict = ujson.loads(decodedPayload)
 
-        if decodedTopic == "status/online/reply":
-            # Set node state
-            channels = payloadDict["response"]
-            for key, value in channels.items():
-                asyncio.create_task(self.on_state_update(key, value))                   
+            if decodedTopic == "alive_check":
+                asyncio.create_task(self.__node_online())
+                return
 
-            return
-        
-        self.incoming(decodedTopic, payloadDict, retained)
+            if decodedTopic == "status/online/reply":
+                # Scenario - previously connected to broker using
+                # different API key
+                if payloadDict["response"] == "not_found":
+                    self.system.reset_config()
+                    self.system.restart(5)
+                    return
+
+                # for key, value in response.items():
+                #     asyncio.create_task(self.on_state_update(key, value))
+
+                # Set node state on connection (handled differently for inputs vs. outputs)
+                self.on_bootstrap(decodedTopic, payloadDict, retained)                   
+                return
+            
+            self.incoming(decodedTopic, payloadDict, retained)
+        except Exception as e:
+            Log.error("MQTTClient", "__subscribe", e)
+            self.led.red(False)
+            sys.exit()
 
     async def __wifi_coro(self, network_state):
         if not network_state:
             self.on_disconnect()
             self.led.pulse("red")
-
 
     async def routine(self):
         config = self.system.config
@@ -110,14 +122,11 @@ class MQTTClient(NodeClient):
             if hasattr(super(), 'set_publish'):
                 self.set_publish(self.__on_publish)
 
-            if hasattr(super(), 'set_on_settings_fn'):
-                self.set_on_settings_fn(self.on_settings)
+            # Required input methods
+            if hasattr(super(), 'set_on_state_activate_fn'):
+                self.set_on_state_activate_fn(self.on_state_activate)
 
-            # Input only methods
-            if hasattr(super(), 'set_on_active_state_fn'):
-                self.set_on_active_state_fn(self.on_active_state)
-
-            # Output only methods
+            # Required output methods
             if hasattr(super(), 'set_on_state_update_fn'):
                 self.set_on_state_update_fn(self.on_state_update)  
 
