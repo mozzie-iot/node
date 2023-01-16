@@ -1,64 +1,59 @@
 import ujson
 import uasyncio as asyncio
 
+from node.core.node import Node
 from node.core.utils.logger import Log
 
-class InputClient(object):
+class InputClient(Node):
     def __init__(self):
+        super().__init__()
         self.__active_state_task = None
-        self.__on_active_state = None
-        self.__on_settings = None
-        self.__publish = None
+        self.__on_state_activate = None
+
+    def __update_state(self, state, topic, payload):
+        if state == "on":
+            self.__active_state_task = asyncio.create_task(self.__on_state_activate())
+            self.subscribe_response(topic, payload["id"], "success")
+        elif state == "off":
+            if self.__active_state_task is not None:
+                self.__active_state_task.cancel()
+                
+            self.subscribe_response(topic, payload["id"], "success")
+            self.on_state_deactivate()
 
     # set in base 
-    def set_on_active_state_fn(self, fn):
-        self.__on_active_state = fn
+    def set_on_state_activate_fn(self, fn):
+        self.__on_state_activate = fn
 
-    def set_on_settings_fn(self, fn):
-        self.__on_settings = fn
+    # Optional method to be used in client
+    def on_state_deactivate(self):
+        pass
 
-    def set_publish(self, fn):
-        self.__publish = fn
-
-    def _subscribe_response(self, topic, transaction_id, message):
-        responsePayload = ujson.dumps({
-            "response": message, 
-            "id": transaction_id,
-            "isDisposed": True
-        })
-        asyncio.create_task(self.__publish("{}/reply".format(topic), responsePayload))
+    # Called when node connects to broker to set initial state
+    def on_bootstrap(self, topic, payload, retained):
+        state = payload["response"]
+        self.__update_state(state, topic, payload)
 
     def send_value(self, channel, value):
+        topic = self.system.config["secret_key"]
         message = ujson.dumps({"channel": channel, "value": value})
-        topic = "input/{}".format(self.system.config["secret_key"])
         asyncio.create_task(self.__publish(topic, message))
 
     # for use in base (mqtt callback)
     def incoming(self, topic, payload, retained):
-        payloadStr = payload.decode("utf-8");
-        payloadObj = ujson.loads(payloadStr)
-        data = payloadObj["data"]
+        secret = self.system.config["secret_key"]
 
-        # Set node run settings
-        if "settings" in data:
-            self.__on_settings(data["settings"])
-            self._subscribe_response(topic, payloadObj["id"], "received")
+        if topic == f"node/{secret}/settings":
+            self.on_settings(payload)
+            self.subscribe_response(topic, payload["id"], "received")
             return
 
-        # Handle action
-        if "action" in data:
-            type = data["action"]["type"]
-            if type == "activate":
-                channels = data["action"]["channels"]
-                self.__active_state_task = asyncio.create_task(self.__on_active_state(channels)) 
-                self._subscribe_response(topic, payloadObj["id"], "success")
-                Log.info("InputClient.incoming","status: ACTIVE")
-            elif type == "deactivate":
-                self.__active_state_task.cancel()
-                self._subscribe_response(topic, payloadObj["id"], "success")
-                Log.info("InputClient.incoming","status: INACTIVE")
+        if topic == f"node/{secret}/state":
+            state = payload["state"]
+            self.__update_state(state, topic, payload)
             return
 
+        Log.error("InputClient", f"Unhandled topic: {topic}")
             
             
 

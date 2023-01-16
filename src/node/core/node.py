@@ -2,12 +2,8 @@ import ujson
 import uasyncio as asyncio
 
 class Node(object):
-    def on_disconnect(self):
-        pass
-
-    # For future use
-    def on_settings(self, settings):
-        pass
+    def __init__(self):
+        self.__publish = None
 
     def set_publish(self, fn):
         self.__publish = fn
@@ -20,3 +16,13 @@ class Node(object):
             "isDisposed": True
         })
         asyncio.create_task(self.__publish("{}/reply".format(topic), responsePayload))
+
+    def on_disconnect(self):
+        pass
+
+    # For future use
+    def on_settings(self, settings):
+        pass
+
+
+    
