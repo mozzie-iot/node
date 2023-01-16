@@ -1,4 +1,3 @@
-import ujson
 import uasyncio as asyncio
 
 from node.core.node import Node
@@ -34,10 +33,9 @@ class InputClient(Node):
         state = payload["response"]
         self.__update_state(state, topic, payload)
 
-    def send_value(self, channel, value):
+    def send_value(self, message: str):
         topic = self.system.config["secret_key"]
-        message = ujson.dumps({"channel": channel, "value": value})
-        asyncio.create_task(self.__publish(topic, message))
+        asyncio.create_task(self.__publish(f"input:{topic}", message))
 
     # for use in base (mqtt callback)
     def incoming(self, topic, payload, retained):
