@@ -50,7 +50,9 @@ Args:
 1. `channel` node channel getting updated
 2. `state` "on" | "off", duty_cycle (int)]
 
-### Example
+## Examples
+
+### Output
 
 4 Channel relay with a normally open config
 
@@ -78,6 +80,45 @@ class NodeClient(OutputClient):
         relay.value(num_status)
 
 
+```
+
+### Input
+
+DS18B20 digital temperature sensor
+
+```
+import uasyncio as asyncio
+import ds18x20
+import machine
+import onewire
+
+from node.input import InputClient
+from node.core.utils.logger import Log
+
+class NodeClient(InputClient):
+    # Node public key - required
+    api_key = "2a92cc9e-658b-44f4-998c-4cad1767c2dc"
+
+    _pin = machine.Pin(4)
+    _node = ds18x20.DS18X20(onewire.OneWire(_pin))
+
+    async def on_state_activate(self):
+        Log.info("NodeClient.on_state_activate", "Activated")
+
+        roms = self._node.scan()
+
+        while True:
+            for rom in roms:
+                temp = self._node.read_temp(rom)
+                if isinstance(temp, float):
+                    measurement = round(temp, 2)
+                    Log.info("NodeClient.on_state_activate", f"publish: {measurement}")
+                    self.send_value(0, str(measurement))
+                else:
+                    self.send_value(0, "0.0")
+
+            # Send measurment every 15 seconds
+            await asyncio.sleep(15)
 ```
 
 ## Core Schematic
