@@ -1,16 +1,17 @@
 import sys
 import uasyncio as asyncio
 import ujson
+import machine
 
-from node.core.lib.mqtt_as import MQTT_AS_Client, eliza
+from node.core.lib.mqtt_as import MQTT_AS_Client
 from node.core.utils.logger import Log
 
 from client import NodeClient
 
 class MQTTClient(NodeClient):
-    def __init__(self, system, led):
+    def __init__(self, config, led):
         super().__init__()
-        self.system = system
+        self.config = config
         self.led = led
         self.__client = None
 
@@ -19,13 +20,12 @@ class MQTTClient(NodeClient):
 
     async def __node_online(self):
         Log.info("MQTT.__node_online", "Publish Node Online")
-        config = self.system.config
 
         # note: need id to get response and nestjs doesn't expose id
-        # we set data as secret too
+        # we set data as client_id too
         payload = {
-            "id": config["secret_key"],
-            "data": config["secret_key"]
+            "id": self.config["client_id"],
+            "data": self.config["client_id"]
         }
 
         await self.__on_publish('status/online', ujson.dumps(payload))
@@ -33,13 +33,13 @@ class MQTTClient(NodeClient):
     async def __conn_han(self, client):
         self.led.green()
 
-        secret = self.system.config["secret_key"]
+        client_id = self.config["client_id"]
 
         # Set custom node settings
-        await client.subscribe(f"node/{secret}/settings", 1)
+        await client.subscribe(f"node/{client_id}/settings", 1)
         
         # Update node state
-        await client.subscribe(f"node/{secret}/state", 1)
+        await client.subscribe(f"node/{client_id}/state", 1)
 
         # If broker or transporter go down, they will publish 'alive_check' when 
         # back up - mostly relevant for hot reloading in development
@@ -64,13 +64,6 @@ class MQTTClient(NodeClient):
                 return
 
             if decodedTopic == "status/online/reply":
-                # Scenario - previously connected to broker using
-                # different API key
-                if payloadDict["response"] == "not_found":
-                    self.system.reset_config()
-                    asyncio.create_task(self.system.restart(1))
-                    return
-
                 # Set node state on connection (handled differently for inputs vs. outputs)
                 self.on_bootstrap(decodedTopic, payloadDict, retained)                   
                 return
@@ -87,18 +80,17 @@ class MQTTClient(NodeClient):
             self.led.pulse("red")
 
     async def routine(self):
-        config = self.system.config
         MQTT_AS_Client.DEBUG = True
         self.__client  = MQTT_AS_Client({
-            'client_id':     config["secret_key"],
-            'server':        'hub.huebot',
+            'client_id':     self.config["client_id"],
+            'server':        self.config["network"]["host"],
             'subs_cb':       self.__subscribe,
             'connect_coro':  self.__conn_han,
-            'ssid':          config["ap"]["ssid"],
-            'wifi_pw':       config["ap"]["pw"],
+            'ssid':          self.config["network"]["ssid"],
+            'wifi_pw':       self.config["network"]["password"],
             'port':          1883,
-            'user':          config["mqtt"]["un"],
-            'password':      config["mqtt"]["pw"],
+            'user':          self.config["mqtt_broker"]["username"],
+            'password':      self.config["mqtt_broker"]["password"],
             'keepalive':     10,
             'ping_interval': 5,
             'ssl':           False,
@@ -107,7 +99,7 @@ class MQTTClient(NodeClient):
             'clean_init':    True,
             'clean':         True,
             'max_repubs':    4,
-            'will':          ['status/offline',ujson.dumps({"data": config["secret_key"]}), False],
+            'will':          ['status/offline',ujson.dumps({"data": self.config["client_id"]}), False],
             'wifi_coro':     self.__wifi_coro
         })
 
@@ -131,6 +123,7 @@ class MQTTClient(NodeClient):
             self.led.pulse("red")
             Log.error("MQTT.routine", "Failed to connect", e)
             # broker not available
-            await asyncio.create_task(self.system.restart(5))
+            await asyncio.sleep(5)
+            machine.reset()
 
         

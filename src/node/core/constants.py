@@ -1,8 +1,3 @@
-# BLE
-BLE_NAME = 'Huebot Node'
-BLE_SERVICE_UUID = 'e0acb31d-7a35-45c3-b108-7339d6f3354f'
-BLE_CHAR_RX_UUID = '474f2b2d-2ace-4e52-991b-1f73767dcd6a'
-
 # SYSTEM STATES
 SYSTEM_RESET = 'reset'
 SYSTEM_SETUP = 'setup'

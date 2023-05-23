@@ -1,0 +1,12 @@
+{
+  "client_id": "",
+  "network": {
+    "host": "",
+    "ssid": "",
+    "password": ""
+  },
+  "mqtt_broker": {
+    "username": "",
+    "password": ""
+  }
+}
