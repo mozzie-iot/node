@@ -1,0 +1,12 @@
+{
+  "client_id": "test_client",
+  "network": {
+    "host": "huebot.local",
+    "ssid": "WLMshawsheen",
+    "password": "Smokehouse2"
+  },
+  "mqtt_broker": {
+    "username": "3TZgWf8hnfG5LRXQ9mft",
+    "password": "2ORrrDQwQsYHczTd4gkbcIS0aBqhGC"
+  }
+}
