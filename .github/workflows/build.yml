@@ -15,23 +15,9 @@ jobs:
         shell: bash
         run: ./scripts/build.sh
 
-      - name: release
-        uses: actions/create-release@v1
-        id: create_release
+      - name: Release with Notes
+        uses: softprops/action-gh-release@v1
         with:
-          draft: false
-          prerelease: false
-          release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{ github.ref }}
+          files: ~/work/micropython/ports/esp32/build-GENERIC/firmware.bin
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: upload linux artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ~/work/micropython/ports/esp32/build-GENERIC/firmware.bin
-          asset_name: tester.linux-amd64.tar.gz
-          asset_content_type: application/gzip
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
