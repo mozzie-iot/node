@@ -19,7 +19,7 @@ if ! make ; then
     exit 1 
 fi
 
-if ! cd ~ && git clone -b v4.0.2 --recursive https://github.com/espressif/esp-idf.git ; then 
+if ! cd ~/ && git clone -b v4.0.2 --recursive https://github.com/espressif/esp-idf.git ; then 
     printf "Failed to clone https://github.com/espressif/esp-idf.git"
     exit 1
 fi
