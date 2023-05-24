@@ -21,7 +21,7 @@ jobs:
           path: ~/work/test.txt
 
       - name: where are you
-        run: ls ${{ github.workspace }}/../../
+        run: ls ~/work
 
       # - name: release
       #   uses: actions/create-release@v1
