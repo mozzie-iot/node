@@ -24,14 +24,16 @@ if ! cd ~/ && git clone -b v4.0.2 --recursive https://github.com/espressif/esp-i
     exit 1
 fi
 
-if ! ~/esp-idf/install.sh ; then 
-    printf "Failed to run script: ./esp-idf/install.sh"
-    exit 1
-fi
+ls ~/
 
-if ! source ~/esp-idf/export.sh ; then 
-    printf "Failed to source script: ./esp-idf/export.sh"
-    exit 1
-fi
+# if ! ~/esp-idf/install.sh ; then 
+#     printf "Failed to run script: ./esp-idf/install.sh"
+#     exit 1
+# fi
+
+# if ! source ~/esp-idf/export.sh ; then 
+#     printf "Failed to source script: ./esp-idf/export.sh"
+#     exit 1
+# fi
 
 echo "DONE!"
