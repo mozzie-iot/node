@@ -13,4 +13,5 @@ jobs:
 
       - name: Run script
         shell: bash
+        working-directory: scripts
         run: ./scripts/build.sh

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ls ~/runners/
+ls 
 
 # cd ..
 
