@@ -19,4 +19,19 @@ if ! make ; then
     exit 0 
 fi
 
+if ! cd ~ && git clone -b v4.0.2 --recursive https://github.com/espressif/esp-idf.git ; then 
+    printf "Failed to clone https://github.com/espressif/esp-idf.git"
+    exit 0
+fi
+
+if ! ./esp-idf/install.sh ; then 
+    printf "Failed to run script: ./esp-idf/install.sh"
+    exit 0
+fi
+
+if ! source esp-idf/export.sh ; then 
+    printf "Failed to source script: ./esp-idf/export.sh"
+    exit 0
+fi
+
 echo "DONE!"
