@@ -17,5 +17,9 @@ jobs:
 
       - name: Release
         uses: softprops/action-gh-release@v1
+
+      - uses: AButler/upload-release-assets@v2.0
         with:
           files: ~/work/micropython/ports/esp32/build-GENERIC/firmware.bin
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{ github.ref }}
