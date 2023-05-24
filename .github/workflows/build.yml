@@ -14,3 +14,8 @@ jobs:
       - name: Run script
         shell: bash
         run: ./scripts/build.sh
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: ~/work/test.txt
