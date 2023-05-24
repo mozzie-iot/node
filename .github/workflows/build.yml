@@ -15,10 +15,10 @@ jobs:
         shell: bash
         run: ./scripts/build.sh
 
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: my-artifact
-      #     path: ~/work/test.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: ~/work/test.txt
 
       - name: release
         uses: actions/create-release@v1
@@ -37,6 +37,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ~/work/test.txt
+          asset_path: test.txt
           asset_name: tester.linux-amd64.tar.gz
           asset_content_type: application/gzip
