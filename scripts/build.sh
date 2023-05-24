@@ -36,4 +36,11 @@ if ! source ./esp-idf/export.sh ; then
     exit 1
 fi
 
+cd micropython/ports/esp32
+
+if ! make submodules ; then 
+    printf "Failed to make submodules in 'micropython/ports/esp32'"
+    exit 1
+fi
+
 echo "DONE!"
