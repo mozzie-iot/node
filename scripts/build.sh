@@ -1,6 +1,8 @@
 #!/bin/bash
 
-ls ..
+ls ~
+
+# cd ..
 
 # sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi
 # sudo apt-get install build-essential
@@ -11,10 +13,7 @@ ls ..
 #     exit 1
 # fi
 
-# if ! cd micropython/mpy-cross ; then
-#     printf "No directory: micropython/mpy-cross"
-#     exit 1
-# fi
+# cd micropython/mpy-cross
 
 # if ! make ; then 
 #     printf "Failed to make in 'micropython/mpy-cross'"
@@ -43,6 +42,8 @@ ls ..
 # if ! make submodules ; then 
 #     printf "Failed to make submodules in 'micropython/ports/esp32'"
 #     exit 1
-# fi
+# fi 
+
+
 
 echo "DONE!"
