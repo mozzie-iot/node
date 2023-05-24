@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ls 
+ls ~/work/
 
 # cd ..
 
