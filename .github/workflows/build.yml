@@ -13,11 +13,10 @@ jobs:
 
       - name: Run script
         shell: bash
-        run: ./scripts/build.sh
+        # run: ./scripts/build.sh
+        run: echo ${{ github.sha }} > Release.txt
 
-      - name: Release with Notes
+      - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ~/work/micropython/ports/esp32/build-GENERIC/firmware.bin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: Release.txt
