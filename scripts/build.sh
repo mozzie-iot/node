@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ls
+ls ..
 
 # sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi
 # sudo apt-get install build-essential
