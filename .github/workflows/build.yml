@@ -18,24 +18,9 @@ jobs:
       - name: where are you
         run: ls ~/work/node
 
-      - name: release
-        uses: actions/create-release@v1
-        id: create_release
+      - name: Upload release attachment
+        uses: actions/github-script@v4
         with:
-          draft: false
-          prerelease: false
-          release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{ github.ref }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-
-      - name: upload linux artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: tester.zip
-          asset_name: tester.zip
-          asset_content_type: application/gzip
+          script: |
+            const test = await fs.readFileSync("~/work/node/tester.txt")
+            console.log(test)
