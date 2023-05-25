@@ -52,6 +52,7 @@
 #     exit 1
 # fi
 
-touch ~/work/node/tester.sh
+touch ~/work/node/tester.txt
+echo "hello siva" >> tester.txt  
 
 echo "DONE!"

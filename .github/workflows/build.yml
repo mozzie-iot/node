@@ -20,7 +20,7 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: ~/work/node/tester.sh
+          artifacts: ~/work/node/tester.txt
 
       # - name: Release
       #   uses: softprops/action-gh-release@v1
