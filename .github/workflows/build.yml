@@ -15,11 +15,6 @@ jobs:
         shell: bash
         run: ./scripts/build.sh
 
-      # - name: whatever
-      #   run: |
-      #     touch tester.txt
-      #     echo "hello siva" >> tester.txt 
-
       - name: release
         uses: actions/create-release@v1
         id: create_release
@@ -39,11 +34,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: micropython/ports/esp32/build-GENERIC/firmware.bin
-          asset_name: firmware.bin
+          asset_name: mp-esp32-${{ github.ref_name }}.bin
           asset_content_type: application/octet-stream
-
-      # - name: Archive production artifacts
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: dist-without-markdown
-      #     path: tester.txt
