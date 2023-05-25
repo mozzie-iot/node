@@ -20,12 +20,10 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: my-artifact
-          path: ~/work/node/tester.txt
+          name: ~/work/node/tester.txt
 
       - name: Display structure of downloaded files
         run: ls -R
-        working-directory: ~/work/node/tester.txt
 
       # - name: Release with Notes
       #   uses: softprops/action-gh-release@v1
