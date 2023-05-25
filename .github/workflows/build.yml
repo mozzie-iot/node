@@ -18,9 +18,13 @@ jobs:
       - name: where are you
         run: ls ~/work/node
 
-      - uses: ncipollo/release-action@v1
+      - name: Release with Notes
+        uses: softprops/action-gh-release@v1
         with:
-          artifacts: ~/work/node/tester.txt
+          files: ~/work/node/tester.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       # - name: Release
       #   uses: softprops/action-gh-release@v1
