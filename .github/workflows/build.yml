@@ -18,12 +18,13 @@ jobs:
       - name: where are you
         run: ls ~/work/node
 
-      - uses: actions/download-artifact@v3
+      - uses: montudor/action-zip@v1
         with:
-          name: ~/work/node/tester.txt
-
-      - name: Display structure of downloaded files
-        run: ls -R
+          args: zip -qq -r dir.zip ~/work/node/tester.txt
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dir.zip
 
       # - name: Release with Notes
       #   uses: softprops/action-gh-release@v1
