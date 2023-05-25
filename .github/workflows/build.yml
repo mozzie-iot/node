@@ -28,6 +28,7 @@ jobs:
 
       - name: Release with Notes
         uses: softprops/action-gh-release@v1
+        run: ls
         with:
           files: ~/work/node/tester.zip 
         env:
