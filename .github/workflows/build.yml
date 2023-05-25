@@ -18,6 +18,27 @@ jobs:
       - name: where are you
         run: ls ~/work/node
 
+      - name: Upload release attachment
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const fs = require('fs');
+            const tag = context.ref.replace("refs/tags/", "");
+            // Get release for this tag
+            const release = await github.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag
+            });
+            // Upload the release asset
+            await github.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
+              name: "test.sh",
+              data: await fs.readFileSync("~/work/node/tester.sh")
+            });
+
       # - name: Release
       #   uses: softprops/action-gh-release@v1
 
