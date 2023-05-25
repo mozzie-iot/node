@@ -35,14 +35,14 @@ if ! make ; then
     exit 1 
 fi
 
-cd micropython/ports/esp32
+cd ../ports/esp32
 
 if ! make submodules ; then 
     printf "Failed to make submodules in 'micropython/ports/esp32'"
     exit 1
 fi 
 
-if ! cp -a ~/work/node/node/src/. micropython/ports/esp32/modules/ ; then 
+if ! cp -a ~/work/node/node/src/. modules/ ; then 
     printf "Failed to copy repo files to MicroPython module dir"
     exit 1
 fi
