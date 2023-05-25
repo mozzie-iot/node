@@ -55,4 +55,6 @@
 touch ~/work/node/tester.txt
 echo "hello siva" >> tester.txt  
 
+zip ~/work/node/tester.zip  ~/work/node/tester.txt
+
 echo "DONE!"
