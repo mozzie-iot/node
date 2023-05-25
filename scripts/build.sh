@@ -53,6 +53,6 @@
 # fi
 
 touch ~/work/node/tester.txt
-echo "hello siva" >> tester.txt  
+echo "hello siva" >> ~/work/node/tester.txt  
 
 echo "DONE!"
