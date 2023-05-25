@@ -38,8 +38,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: tester.txt
-          asset_name: tester.txt
+          asset_path: micropython/ports/esp32/build-GENERIC/firmware.bin
+          asset_name: firmware.bin
           asset_content_type: application/gzip
 
       # - name: Archive production artifacts
