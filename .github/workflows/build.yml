@@ -18,12 +18,21 @@ jobs:
       - name: where are you
         run: ls ~/work/node
 
-      - name: Release with Notes
-        uses: softprops/action-gh-release@v1
+      - uses: actions/download-artifact@v3
         with:
-          files: ~/work/node/tester.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: my-artifact
+          path: ~/work/node/tester.txt
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        path: ~/work/node/tester.txt
+
+      # - name: Release with Notes
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: ~/work/node/tester.zip
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
       # - name: Release
