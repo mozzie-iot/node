@@ -20,8 +20,30 @@ jobs:
           touch tester.txt
           echo "hello siva" >> tester.txt 
 
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
         with:
-          name: dist-without-markdown
-          path: tester.txt
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+
+      - name: upload linux artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: tester.txt
+          asset_name: tester.txt
+          asset_content_type: application/gzip
+
+      # - name: Archive production artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: dist-without-markdown
+      #     path: tester.txt
