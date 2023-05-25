@@ -18,12 +18,9 @@ jobs:
       - name: where are you
         run: ls ~/work/node
 
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+      - uses: ncipollo/release-action@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file:  ~/work/node/tester.sh
-          tag: ${{ github.ref }}
+          artifacts: ~/work/node/tester.sh
 
       # - name: Release
       #   uses: softprops/action-gh-release@v1
