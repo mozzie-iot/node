@@ -22,6 +22,4 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            const fs = require('fs');
-            const test = await fs.readFileSync("~/work/node/tester.txt")
-            console.log(test)
+            console.log(ls)
