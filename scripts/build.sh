@@ -28,21 +28,21 @@ if ! git clone https://github.com/micropython/micropython.git ; then
     exit 1
 fi
 
-cd ./micropython/mpy-cross
+cd micropython/mpy-cross
 
 if ! make ; then 
     printf "Failed to make in 'micropython/mpy-cross'"
     exit 1 
 fi
 
-cd ./micropython/ports/esp32
+cd micropython/ports/esp32
 
 if ! make submodules ; then 
     printf "Failed to make submodules in 'micropython/ports/esp32'"
     exit 1
 fi 
 
-if ! cp -a ~/work/node/node/src/. ./micropython/ports/esp32/modules/ ; then 
+if ! cp -a ~/work/node/node/src/. micropython/ports/esp32/modules/ ; then 
     printf "Failed to copy repo files to MicroPython module dir"
     exit 1
 fi
