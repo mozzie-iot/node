@@ -40,7 +40,7 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: micropython/ports/esp32/build-GENERIC/firmware.bin
           asset_name: firmware.bin
-          asset_content_type: application/gzip
+          asset_content_type: application/octet-stream
 
       # - name: Archive production artifacts
       #   uses: actions/upload-artifact@v3
