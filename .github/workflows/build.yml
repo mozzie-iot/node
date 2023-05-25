@@ -29,7 +29,7 @@ jobs:
       - name: Release with Notes
         uses: softprops/action-gh-release@v1
         with:
-          files: ~/work/node/tester.txt
+          files: ~/work/node/tester.zip 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
