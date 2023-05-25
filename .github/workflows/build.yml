@@ -11,15 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run script
-        shell: bash
-        run: ./scripts/build.sh
+      # - name: Run script
+      #   shell: bash
+      #   run: ./scripts/build.sh
 
-      - name: where are you
-        run: ls ~/work/node
+      - name: whatever
+        run: |
+          touch tester.txt
+          echo "hello siva" >> tester.txt 
 
-      - name: Upload release attachment
-        uses: actions/github-script@v4
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
         with:
-          script: |
-            console.log(__dirname)
+          name: dist-without-markdown
+          path: tester.txt
