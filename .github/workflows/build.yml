@@ -25,7 +25,7 @@ jobs:
 
       - name: Display structure of downloaded files
         run: ls -R
-        path: ~/work/node/tester.txt
+        working-directory: ~/work/node/tester.txt
 
       # - name: Release with Notes
       #   uses: softprops/action-gh-release@v1
