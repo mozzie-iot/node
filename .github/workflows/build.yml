@@ -11,14 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # - name: Run script
-      #   shell: bash
-      #   run: ./scripts/build.sh
+      - name: Run script
+        shell: bash
+        run: ./scripts/build.sh
 
-      - name: whatever
-        run: |
-          touch tester.txt
-          echo "hello siva" >> tester.txt 
+      # - name: whatever
+      #   run: |
+      #     touch tester.txt
+      #     echo "hello siva" >> tester.txt 
 
       - name: release
         uses: actions/create-release@v1

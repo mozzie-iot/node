@@ -52,9 +52,9 @@
 #     exit 1
 # fi
 
-touch ~/work/node/tester.txt
-echo "hello siva" >> ~/work/node/tester.txt  
+touch tester.txt
+echo "hello siva" >> tester.txt  
 
-zip ~/work/node/tester.zip ~/work/node/tester.txt
+# zip ~/work/node/tester.zip ~/work/node/tester.txt
 
 echo "DONE!"
