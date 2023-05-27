@@ -11,8 +11,8 @@ from client import NodeClient
 class MQTTClient(NodeClient):
     def __init__(self, config, led):
         super().__init__()
-        self.config = config
-        self.led = led
+        self.__config = config
+        self.__led = led
 
     # Format required by NestJS MQTT transporter
     def __subscribe_resp(self, topic, transaction_id, message):
@@ -29,8 +29,8 @@ class MQTTClient(NodeClient):
         # note: need id to get response and nestjs doesn't expose id
         # we set data as client_id too
         payload = {
-            "id": self.config["client_id"],
-            "data": self.config["client_id"]
+            "id": self.__config["client_id"],
+            "data": self.__config["client_id"]
         }
 
         await client.publish('status/online', ujson.dumps(payload))
@@ -38,7 +38,7 @@ class MQTTClient(NodeClient):
 
 
     async def __connect_coro(self, client):
-        self.led.green()
+        self.__led.green()
 
         if hasattr(super(), 'connected_cb'):
             self.connected_cb(client)
@@ -69,35 +69,35 @@ class MQTTClient(NodeClient):
                 
         except Exception as e:
             Log.error("MQTTClient", "__subscribe", e)
-            self.led.red(False)
+            self.__led.red(False)
             sys.exit()
 
     async def __wifi_coro(self, network_state):
         if not network_state:
             self.on_disconnect()
-            self.led.pulse("red")
+            self.__led.pulse("red")
 
     async def routine(self):
         MQTT_AS_Client.DEBUG = True
         client  = MQTT_AS_Client({
-            'client_id':     self.config["client_id"],
-            'server':        self.config["server"],
+            'client_id':     self.__config["client_id"],
+            'server':        self.__config["server"],
             'subs_cb':       self.__subs_cb,
             'connect_coro':  self.__connect_coro,
-            'ssid':          self.config["ssid"],
-            'wifi_pw':       self.config["wifi_pw"],
-            'port':          self.config["port"] or 1883,
-            'user':          self.config["user"],
-            'password':      self.config["password"],
-            'keepalive':     self.config["keepalive"] or 10,
-            'ping_interval': self.config["ping_interval"] or 5,
+            'ssid':          self.__config["ssid"],
+            'wifi_pw':       self.__config["wifi_pw"],
+            'port':          self.__config["port"] or 1883,
+            'user':          self.__config["user"],
+            'password':      self.__config["password"],
+            'keepalive':     self.__config["keepalive"] or 10,
+            'ping_interval': self.__config["ping_interval"] or 5,
             'ssl':           False,
             'ssl_params':    {},
-            'response_time': self.config["response_time"] or 10,
+            'response_time': self.__config["response_time"] or 10,
             'clean_init':    True,
             'clean':         True,
-            'max_repubs':    self.config["max_repubs"] or 4,
-            'will':          ['status/offline',ujson.dumps({"data": self.config["client_id"]}), False],
+            'max_repubs':    self.__config["max_repubs"] or 4,
+            'will':          ['status/offline',ujson.dumps({"data": self.__config["client_id"]}), False],
             'wifi_coro':     self.__wifi_coro
         })
 
@@ -109,7 +109,7 @@ class MQTTClient(NodeClient):
             self.set_client(client)
 
         except Exception as e:
-            self.led.pulse("red")
+            self.__led.pulse("red")
             Log.error("MQTT.routine", "Failed to connect", e)
             # broker not available
             await asyncio.sleep(5)
