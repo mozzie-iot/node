@@ -3,8 +3,8 @@ import uasyncio as asyncio
 import ujson
 import machine
 
-from node.core.lib.mqtt_as import MQTT_AS_Client
-from node.core.utils.logger import Log
+from lib.mqtt_as import MQTT_AS_Client
+from utils.logger import Log
 
 from client import NodeClient
 
@@ -13,12 +13,17 @@ class MQTTClient(NodeClient):
         super().__init__()
         self.config = config
         self.led = led
-        self.__client = None
 
-    async def __on_publish(self, topic, msg):
-        await self.__client.publish(topic, msg, qos = 0)
+    # Format required by NestJS MQTT transporter
+    def __subscribe_resp(self, topic, transaction_id, message):
+        responsePayload = ujson.dumps({
+            "response": message, 
+            "id": transaction_id,
+            "isDisposed": True
+        })
+        asyncio.create_task(self.__publish("{}/reply".format(topic), responsePayload))
 
-    async def __node_online(self):
+    async def __node_online(self, client):
         Log.info("MQTT.__node_online", "Publish Node Online")
 
         # note: need id to get response and nestjs doesn't expose id
@@ -28,18 +33,15 @@ class MQTTClient(NodeClient):
             "data": self.config["client_id"]
         }
 
-        await self.__on_publish('status/online', ujson.dumps(payload))
+        await client.publish('status/online', ujson.dumps(payload))
 
-    async def __conn_han(self, client):
+
+
+    async def __connect_coro(self, client):
         self.led.green()
 
-        client_id = self.config["client_id"]
-
-        # Set custom node settings
-        await client.subscribe(f"node/{client_id}/settings", 1)
-        
-        # Update node state
-        await client.subscribe(f"node/{client_id}/state", 1)
+        if hasattr(super(), 'connected_cb'):
+            self.connected_cb(client)
 
         # If broker or transporter go down, they will publish 'alive_check' when 
         # back up - mostly relevant for hot reloading in development
@@ -49,26 +51,22 @@ class MQTTClient(NodeClient):
         await client.subscribe("status/online/reply", 0)
        
         # After subscribing to topics, let broker know we are ready
-        await self.__node_online()
+        await self.__node_online(client)
 
-    def __subscribe(self, topic, payload, retained):
-
+    def __subs_cb(self, topic, payload, retained):
         try:
             Log.info("MQTT.subscribe", "topic:{0}, payload:{1}, retained:{2}".format(topic, payload, retained))
             decodedTopic = topic.decode("utf-8")
-            decodedPayload = payload.decode("utf-8");
-            payloadDict = ujson.loads(decodedPayload)
 
             if decodedTopic == "alive_check":
                 asyncio.create_task(self.__node_online())
                 return
-
-            if decodedTopic == "status/online/reply":
-                # Set node state on connection (handled differently for inputs vs. outputs)
-                self.on_bootstrap(decodedTopic, payloadDict, retained)                   
-                return
             
-            self.incoming(decodedTopic, payloadDict, retained)
+            if hasattr(super(), 'subscribe_cb'):
+                self.subscribe_cb(topic, payload, retained)
+
+            self.__subscribe_resp(topic, payload["id"], "received")
+                
         except Exception as e:
             Log.error("MQTTClient", "__subscribe", e)
             self.led.red(False)
@@ -81,43 +79,34 @@ class MQTTClient(NodeClient):
 
     async def routine(self):
         MQTT_AS_Client.DEBUG = True
-        self.__client  = MQTT_AS_Client({
+        client  = MQTT_AS_Client({
             'client_id':     self.config["client_id"],
-            'server':        self.config["network"]["host"],
-            'subs_cb':       self.__subscribe,
-            'connect_coro':  self.__conn_han,
-            'ssid':          self.config["network"]["ssid"],
-            'wifi_pw':       self.config["network"]["password"],
-            'port':          1883,
-            'user':          self.config["mqtt_broker"]["username"],
-            'password':      self.config["mqtt_broker"]["password"],
-            'keepalive':     10,
-            'ping_interval': 5,
+            'server':        self.config["server"],
+            'subs_cb':       self.__subs_cb,
+            'connect_coro':  self.__connect_coro,
+            'ssid':          self.config["ssid"],
+            'wifi_pw':       self.config["wifi_pw"],
+            'port':          self.config["port"] or 1883,
+            'user':          self.config["user"],
+            'password':      self.config["password"],
+            'keepalive':     self.config["keepalive"] or 10,
+            'ping_interval': self.config["ping_interval"] or 5,
             'ssl':           False,
             'ssl_params':    {},
-            'response_time': 10,
+            'response_time': self.config["response_time"] or 10,
             'clean_init':    True,
             'clean':         True,
-            'max_repubs':    4,
+            'max_repubs':    self.config["max_repubs"] or 4,
             'will':          ['status/offline',ujson.dumps({"data": self.config["client_id"]}), False],
             'wifi_coro':     self.__wifi_coro
         })
 
         try:
             Log.info("MQTT.routine", "Init")
-            await self.__client.connect()
+            await client.connect()
             Log.info("MQTT.routine", "Successful network connection")
 
-            if hasattr(super(), 'set_publish'):
-                self.set_publish(self.__on_publish)
-
-            # Required input methods
-            if hasattr(super(), 'set_on_state_activate_fn'):
-                self.set_on_state_activate_fn(self.on_state_activate)
-
-            # Required output methods
-            if hasattr(super(), 'set_on_state_update_fn'):
-                self.set_on_state_update_fn(self.on_state_update)  
+            self.set_client(client)
 
         except Exception as e:
             self.led.pulse("red")

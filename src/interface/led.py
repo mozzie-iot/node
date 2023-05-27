@@ -1,7 +1,7 @@
 import machine 
 import uasyncio as asyncio
 
-from node.core.utils.logger import Log
+from utils.logger import Log
 
 DUTY_OFF = 1023
 DUTY_ON = 0

@@ -1,7 +1,7 @@
 import uasyncio as asyncio
 
-from node.core.mqtt_client import MQTTClient
-from node.core.utils.logger import Log
+from mqtt_client import MQTTClient
+from utils.logger import Log
 
 def set_global_exception():
     def handle_exception(loop, context):
@@ -17,7 +17,7 @@ async def main():
 
 loop = asyncio.get_event_loop()
 try:
-    if config:
+    if config is not None:
         asyncio.run(main())
         loop.run_forever()
 except Exception as e:

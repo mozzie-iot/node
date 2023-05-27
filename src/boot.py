@@ -1,21 +1,12 @@
-from node.core.utils.fs import read
-from node.core.interface.led import LED
-from node.core.utils.logger import Log
+from utils.fs import read
+from interface.led import LED
+from utils.logger import Log
 
 led = LED()
 led.blue()
 Log.info("system", "booting up!")
 
 def get_config():
-    def get_node_type(node):
-        for base in node.__class__.__bases__:
-            if base.__name__ == "InputClient":
-                return "input"
-            elif base.__name__ == "OutputClient":
-                return "output"
-            else:
-                return None
-
     try:
         file = read()
         return file

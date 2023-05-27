@@ -1,12 +1,13 @@
 {
   "client_id": "",
-  "network": {
-    "host": "",
-    "ssid": "",
-    "password": ""
-  },
-  "mqtt_broker": {
-    "username": "",
-    "password": ""
-  }
+  "server": "",
+  "ssid": "",
+  "wifi_pw": "",
+  "port": null,
+  "user": "",
+  "password": "",
+  "keepalive": null,
+  "ping_interval": null,
+  "response_time": null,
+  "max_repubs": null
 }
