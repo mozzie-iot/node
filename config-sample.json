@@ -1,0 +1,13 @@
+{
+  "client_id": "",
+  "server": "",
+  "ssid": "",
+  "wifi_pw": "",
+  "port": null,
+  "user": "",
+  "password": "",
+  "keepalive": null,
+  "ping_interval": null,
+  "response_time": null,
+  "max_repubs": null
+}

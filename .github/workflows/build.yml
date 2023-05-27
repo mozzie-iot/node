@@ -1,0 +1,38 @@
+name: Build Node Firmware
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run script
+        shell: bash
+        run: ./scripts/build.sh
+
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+
+      - name: upload linux artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: micropython/ports/esp32/build-GENERIC/firmware.bin
+          asset_name: mp-esp32-${{ github.ref_name }}.bin
+          asset_content_type: application/octet-stream

@@ -1,0 +1,6 @@
+# SYSTEM STATES
+SYSTEM_RESET = 'reset'
+SYSTEM_SETUP = 'setup'
+SYSTEM_NOT_SETUP = 'not_setup'
+SYSTEM_ACTIVE = 'active'
+SYSTEM_ERROR = 'error'

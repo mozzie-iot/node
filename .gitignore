@@ -1,1 +1,5 @@
 src/client.py
+src/config.json
+src/client.py
+**/.DS_Store
+pymakr.conf
