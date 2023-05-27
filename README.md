@@ -10,7 +10,7 @@ Most of the credit for the Huebot node functionality goes to [MicroPython](https
 Source files and functionality baked into the firmware
 1. Follow board-specific setup/installation instructions *but use the latest Huebot firmware build in releases instead of MicroPython firmware*
     - [ESP32](https://docs.micropython.org/en/latest/esp32/tutorial/intro.html)
-2. Create [client.py](https://github.com/huebot-iot/node/blob/main/README.md#client.py) and [config.json](https://github.com/huebot-iot/node/blob/main/README.md#config.json) files in root directory
+2. Create [client.py](https://github.com/huebot-iot/node/blob/main/README.md#clientpy) and [config.json](https://github.com/huebot-iot/node/blob/main/README.md#configjson) files in root directory
 3. Upload files to the MCU. This might require some Googling depending on the board. We've found success using the [PyMakr extension](https://github.com/pycom/pymakr-vsc) in VScode with the ESP32 (see more [below](https://github.com/huebot-iot/node/blob/main/README.md#pymakr-configuration)).
 4. Setup MCU on breadboard per schematic to take advantage of LED status indicator
     - [ESP32](https://github.com/huebot-iot/node/blob/main/README.md#esp32)
@@ -20,7 +20,7 @@ Ability to view/edit source files
 1. Flash MCU with MicroPython using board-specific setup/installation instructions 
     - [ESP32](https://docs.micropython.org/en/latest/esp32/tutorial/intro.html)
 2. Clone this repo 
-3. In the src create the [client.py](https://github.com/huebot-iot/node/blob/main/README.md#client.py) and [config.json](https://github.com/huebot-iot/node/blob/main/README.md#config.json) files
+3. In the src create the [client.py](https://github.com/huebot-iot/node/blob/main/README.md#clientpy) and [config.json](https://github.com/huebot-iot/node/blob/main/README.md#configjson) files
 4. Upload files to the MCU. This might require some Googling depending on the board. We've found success using the [PyMakr extension](https://github.com/pycom/pymakr-vsc) in VScode with the ESP32 (see more [below](https://github.com/huebot-iot/node/blob/main/README.md#pymakr-configuration)).
 5. Setup MCU on breadboard per schematic to take advantage of LED status indicator
     - [ESP32](https://github.com/huebot-iot/node/blob/main/README.md#esp32)
