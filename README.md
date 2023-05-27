@@ -2,7 +2,9 @@
 A MicroPython MQTT client for WiFi enabled microcontrollers to communicate in the Huebot environment
 <br><br>
 Most of the credit for the Huebot node functionality goes to [MicroPython](https://github.com/micropython/micropython) and, more specifically, [MicroPython Asynchronous MQTT](https://github.com/peterhinch/micropython-mqtt/tree/master/mqtt_as)
-<br><br>
+
+<br>
+
 ## Getting Started
 **Two options - Quick Setup or Development Setup**
 
@@ -25,10 +27,13 @@ Ability to view/edit source files
 5. Setup MCU on breadboard per schematic to take advantage of LED status indicator
     - [ESP32](https://github.com/huebot-iot/node/blob/main/README.md#esp32)
 
-<br><br>
+<br>
+
 ## client.py
 This file is tasked with core node functionality; equipped the MQTT client property and status callbacks.
+
 <br>
+
 ### Boilerplate
 
 ```
@@ -44,7 +49,9 @@ class NodeClient(NodeCore):
 <b>connected_cb</b> Called when connection to broker is estbalished. Recieves the `client` instance as an argument.
 <br>
 <b>subscribe_cb</b> Called when a message is received that matches topic subscription. Receives arguments `topic`, `message`, and `retained`.
-<br><br>
+
+<br>
+
 ## config.json
 MQTT configuration settings. Use `config-sample.json` as a template.
 <br>
@@ -66,11 +73,14 @@ MQTT configuration settings. Use `config-sample.json` as a template.
 
 ```
 
-<br><br>
+<br>
+
 ## Base Schematic
 ### ESP32
 ![core schematic](https://github.com/huebot-iot/node/assets/8736328/289aeaa0-d72a-49ac-ae95-237afb306a97)
-<br><br>
+
+<br>
+
 ## PyMakr Configuration
 If using PyMakr for MCU development and file uploading, here are the settings recommended for the `pymakr.conf` file:
 
@@ -87,6 +97,8 @@ If using PyMakr for MCU development and file uploading, here are the settings re
 }
 
 ```
+
+<br>
 
 ## License
 Huebot is [GPLv3 licensed](LICENSE).
