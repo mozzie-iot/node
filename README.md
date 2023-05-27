@@ -10,7 +10,7 @@ Most of the credit for the Huebot node functionality goes to [MicroPython](https
 
 ### Quick Setup
 Source files and functionality baked into the firmware
-1. Follow board-specific setup/installation instructions *but use the latest Huebot firmware build in releases instead of MicroPython firmware*
+1. Follow board-specific setup/installation instructions *but use the latest [Huebot firmware](https://github.com/huebot-iot/node/releases/latest) build in releases instead of MicroPython firmware*
     - [ESP32](https://docs.micropython.org/en/latest/esp32/tutorial/intro.html)
 2. Create [client.py](https://github.com/huebot-iot/node/blob/main/README.md#clientpy) and [config.json](https://github.com/huebot-iot/node/blob/main/README.md#configjson) files in root directory
 3. Upload files to the MCU. This might require some Googling depending on the board. We've found success using the [PyMakr extension](https://github.com/pycom/pymakr-vsc) in VScode with the ESP32 (see more [below](https://github.com/huebot-iot/node/blob/main/README.md#pymakr-configuration)).
@@ -31,8 +31,6 @@ Ability to view/edit source files
 
 ## client.py
 This file is tasked with core node functionality; equipped the MQTT client property and status callbacks.
-
-<br>
 
 ### Boilerplate
 
