@@ -21,7 +21,8 @@ class MQTTClient(NodeClient):
             "id": transaction_id,
             "isDisposed": True
         })
-        asyncio.create_task(self.__publish("{}/reply".format(topic), responsePayload))
+
+        asyncio.create_task(self.client.publish("{}/reply".format(topic), responsePayload))
 
     async def __node_online(self, client):
         Log.info("MQTT.__node_online", "Publish Node Online")
@@ -40,8 +41,7 @@ class MQTTClient(NodeClient):
     async def __connect_coro(self, client):
         self.__led.green()
 
-        if hasattr(super(), 'connected_cb'):
-            self.connected_cb(client)
+        self.connected_cb(client)
 
         # If broker or transporter go down, they will publish 'alive_check' when 
         # back up - mostly relevant for hot reloading in development
@@ -57,15 +57,16 @@ class MQTTClient(NodeClient):
         try:
             Log.info("MQTT.subscribe", "topic:{0}, payload:{1}, retained:{2}".format(topic, payload, retained))
             decodedTopic = topic.decode("utf-8")
+            decodedPayload = payload.decode("utf-8");
+            payloadDict = ujson.loads(decodedPayload)
 
             if decodedTopic == "alive_check":
-                asyncio.create_task(self.__node_online())
+                asyncio.create_task(self.__node_online(self.client))
                 return
             
-            if hasattr(super(), 'subscribe_cb'):
-                self.subscribe_cb(topic, payload, retained)
+            self.subscribe_cb(topic, payloadDict, retained)
 
-            self.__subscribe_resp(topic, payload["id"], "received")
+            self.__subscribe_resp(topic, payloadDict["id"], "received")
                 
         except Exception as e:
             Log.error("MQTTClient", "__subscribe", e)
@@ -74,7 +75,7 @@ class MQTTClient(NodeClient):
 
     async def __wifi_coro(self, network_state):
         if not network_state:
-            self.on_disconnect()
+            self.disconnected_cb()
             self.__led.pulse("red")
 
     async def routine(self):
