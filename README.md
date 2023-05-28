@@ -46,6 +46,8 @@ class NodeClient(NodeCore):
 ### Methods
 <b>connected_cb</b> Called when connection to broker is estbalished. Recieves the `client` instance as an argument.
 <br>
+<b>disconnected_cb</b> Called when connection to broker is lost. 
+<br>
 <b>subscribe_cb</b> Called when a message is received that matches topic subscription. Receives arguments `topic`, `message`, and `retained`.
 
 <br>
