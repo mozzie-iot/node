@@ -29,6 +29,11 @@ Ability to view/edit source files
 
 <br>
 
+## Huebot Environment
+- **Important:** In order to obtain sensor readings from the HTTP endpoint ([server]/node/sensor) they must be published to topic "sensor/[client_id]". Also, the payload must be a string. 
+
+<br>
+
 ## client.py
 This file is tasked with core node functionality; equipped the MQTT client property and status callbacks.
 
@@ -42,9 +47,10 @@ class NodeClient(NodeCore):
 
 ### Properties
 <b>client</b> [[MQTTClient class](https://github.com/peterhinch/micropython-mqtt/blob/master/mqtt_as/README.md#3-mqttclient-class)] access to MQTT client methods (notably `client.publish`)
+<b>config</b> Access to settings in `config.json`. Mostly used to reference `client_id`.
 
 ### Methods
-<b>connected_cb</b> Called when connection to broker is estbalished. Recieves the `client` instance as an argument.
+<b>connected_cb</b> Asynchronous. Called when connection to broker is estbalished. Recieves the `client` instance as an argument.
 <br>
 <b>disconnected_cb</b> Called when connection to broker is lost. 
 <br>
