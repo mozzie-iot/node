@@ -1,11 +1,12 @@
 class NodeCore(object):
-    def __init__(self):
+    def __init__(self, config):
         self.client= None
+        self.config = config
 
     def set_client(self, fn):
         self.client = fn
 
-    def connected_cb(self, *args):
+    async def connected_cb(self, *args):
         pass
 
     def disconnected_cb(self):
