@@ -85,6 +85,14 @@ MQTT configuration settings. Use `config-sample.json` as a template.
 ### ESP32
 ![core schematic](https://github.com/huebot-iot/node/assets/8736328/289aeaa0-d72a-49ac-ae95-237afb306a97)
 
+### Supplies
+This supplies list points to Amazon for simplicity but they can certainly be found eslewhere!
+- [ESP32](https://www.amazon.com/KeeYees-Development-Bluetooth-Microcontroller-ESP-WROOM-32/dp/B07QCP2451/ref=d_pd_di_sccai_cn_sccl_2_1/145-1624382-0187119?pd_rd_w=Os7VE&content-id=amzn1.sym.e13de93e-5518-4644-8e6b-4ee5f2e0b062&pf_rd_p=e13de93e-5518-4644-8e6b-4ee5f2e0b062&pf_rd_r=K6DEVWWDGGP0H822W8YB&pd_rd_wg=JVwyk&pd_rd_r=4898c4b7-7dde-4af4-a9a1-41a528af7373&pd_rd_i=B07QCP2451&th=1)
+- [Breadboards](https://www.amazon.com/Pcs-MCIGICM-Points-Solderless-Breadboard/dp/B07PCJP9DY/ref=sr_1_4?crid=2198DX37ZIMM5&keywords=breadboard&qid=1685540187&sprefix=breadboard+%2Caps%2C193&sr=8-4)
+- [Jumper wires](https://www.amazon.com/AUSTOR-Lengths-Assorted-Preformed-Breadboard/dp/B07CJYSL2T/ref=sr_1_4?keywords=breadboard+jumper+wires&qid=1685540223&sprefix=breadboard+jumpe%2Caps%2C149&sr=8-4)
+- [RGB multicolor LED](https://www.amazon.com/Tricolor-Multicolor-Lighting-Electronics-Components/dp/B01C19ENFK/ref=sr_1_1_sspa?crid=1VRXY3B140ITQ&keywords=multicolor%2Bled&qid=1685539952&sprefix=multicolor%2Bled%2Caps%2C221&sr=8-1-spons&smid=A14FP9XIRL6C1F&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUExVU5CTFdQRlhSQ0o3JmVuY3J5cHRlZElkPUEwODIxODEyMTFET1ZUREMwU1dCMSZlbmNyeXB0ZWRBZElkPUEwMTEyNzY4MVdCOVI0VjdUVE4wWiZ3aWRnZXROYW1lPXNwX2F0ZiZhY3Rpb249Y2xpY2tSZWRpcmVjdCZkb05vdExvZ0NsaWNrPXRydWU&th=1)
+- [~500 ohm resistors](https://www.amazon.com/EDGELEC-Resistor-Tolerance-Multiple-Resistance/dp/B07QK8VRZX/ref=sxin_16_ac_d_bv?ac_md=0-0-QnVkZ2V0IFBpY2s%3D-ac_d_bv_bv_bv&content-id=amzn1.sym.8f2bf95d-b9c2-4e6d-96a9-5fdf77a1951d%3Aamzn1.sym.8f2bf95d-b9c2-4e6d-96a9-5fdf77a1951d&cv_ct_cx=500+ohm+resistor&keywords=500+ohm+resistor&pd_rd_i=B07QK8VRZX&pd_rd_r=92d5e2d7-de0b-4ca4-b96f-f3f1aa74d18c&pd_rd_w=Dk8KR&pd_rd_wg=8TvPz&pf_rd_p=8f2bf95d-b9c2-4e6d-96a9-5fdf77a1951d&pf_rd_r=VMBTMBHK42Y9FFC2GY7M&qid=1685540398&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sprefix=500ohm+res%2Caps%2C243&sr=1-1-270ce31b-afa8-499f-878b-3bb461a9a5a6)
+
 <br>
 
 ## PyMakr Configuration
