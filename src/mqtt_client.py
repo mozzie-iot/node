@@ -1,17 +1,14 @@
 import sys
 import uasyncio as asyncio
 import ujson
-import machine
 
 from lib.mqtt_as import MQTT_AS_Client
-from utils.logger import Log
 
 from client import NodeClient
 
 class MQTTClient(NodeClient):
-    def __init__(self, config, led):
+    def __init__(self, config):
         super().__init__(config)
-        self.__led = led
 
     # Format required by NestJS MQTT transporter
     def __subscribe_resp(self, topic, transaction_id, message):
@@ -24,7 +21,8 @@ class MQTTClient(NodeClient):
         asyncio.create_task(self.client.publish("{}/reply".format(topic), responsePayload))
 
     async def __node_online(self, client):
-        Log.info("MQTT.__node_online", "Publish Node Online")
+        if self.config["debug"]:
+            print("Publish node online")
 
         # note: need id to get response and nestjs doesn't expose id
         # we set data as client_id too
@@ -35,11 +33,7 @@ class MQTTClient(NodeClient):
 
         await client.publish('status/online', ujson.dumps(payload))
 
-
-
     async def __connect_coro(self, client):
-        self.__led.green()
-
         asyncio.create_task(self.connected_cb(client))
 
         # If broker or transporter go down, they will publish 'alive_check' when 
@@ -54,7 +48,9 @@ class MQTTClient(NodeClient):
 
     def __subs_cb(self, topic, payload, retained):
         try:
-            Log.info("MQTT.subscribe", "topic:{0}, payload:{1}, retained:{2}".format(topic, payload, retained))
+            if self.config["debug"]:
+                print(f"Msg received - topic: {topic}, payload: {payload}, retained: {retained}")
+
             decodedTopic = topic.decode("utf-8")
             decodedPayload = payload.decode("utf-8");
             payloadDict = ujson.loads(decodedPayload)
@@ -64,25 +60,24 @@ class MQTTClient(NodeClient):
                 return
             
             if decodedTopic == "status/online/reply":
-                print("Hub online ack")
+                if self.config["debug"]:
+                    print("Publish node online ACK")
                 return
             
             self.subscribe_cb(topic, payloadDict, retained)
 
             self.__subscribe_resp(decodedTopic, payloadDict["id"], "ACK")
-                
         except Exception as e:
-            Log.error("MQTTClient", "__subscribe", e)
-            self.__led.red(False)
+            if self.config["debug"]:
+                print("__subs_cb error: ", e)
             sys.exit()
 
     async def __wifi_coro(self, network_state):
         if not network_state:
             self.disconnected_cb()
-            self.__led.pulse("red")
 
     async def routine(self):
-        MQTT_AS_Client.DEBUG = True
+        MQTT_AS_Client.DEBUG = self.config["debug"]
         client  = MQTT_AS_Client({
             'client_id':     self.config["client_id"],
             'server':        self.config["server"],
@@ -102,21 +97,19 @@ class MQTTClient(NodeClient):
             'clean':         True,
             'max_repubs':    self.config["max_repubs"] or 4,
             'will':          ['status/offline',ujson.dumps({"data": self.config["client_id"]}), False],
-            'wifi_coro':     self.__wifi_coro
+            'wifi_coro':     self.__wifi_coro,
+            'queue_len': 0
         })
 
         try:
-            Log.info("MQTT.routine", "Init")
-            await client.connect()
-            Log.info("MQTT.routine", "Successful network connection")
-
             self.set_client(client)
+            await client.connect()
 
-        except Exception as e:
-            self.__led.pulse("red")
-            Log.error("MQTT.routine", "Failed to connect", e)
-            # broker not available
-            await asyncio.sleep(5)
-            machine.reset()
+            # Non-terminating event 
+            while True:
+                await asyncio.sleep(1)
+
+        finally:
+            client.close()
 
         
