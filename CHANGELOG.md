@@ -17,3 +17,7 @@ All notable changes to this project will be documented in this file.
 * Move `config.json` reader to `main.py` so `boot.py` is freed up for optional use
 * Put non-terminating code after network connection is established in `mqtt_client.py`
 * Clean up unnecessary code/files
+
+# 0.1.3
+
+* Remove boot.py so it can be dropped in by user
